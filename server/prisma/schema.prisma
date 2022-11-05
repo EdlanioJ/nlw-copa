@@ -1,0 +1,84 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Poll {
+  id      String  @id @default(cuid())
+  title   String
+  code    String  @unique
+  ownerId String? @map("owner_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  owner User? @relation(fields: [ownerId], references: [id])
+
+  participants Participant[]
+
+  @@map("poll")
+}
+
+model Participant {
+  id     String @id @default(cuid())
+  userId String @map("user_id")
+  pollId String @map("poll_id")
+
+  user User @relation(fields: [userId], references: [id])
+  poll Poll @relation(fields: [pollId], references: [id])
+
+  guesses Guess[]
+
+  @@unique([userId, pollId])
+  @@map("participant")
+}
+
+model User {
+  id        String  @id @default(cuid())
+  name      String
+  email     String  @unique
+  googleId  String  @unique
+  avatarUrl String? @map("avatar_url")
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  participantingAt Participant[]
+  ownPolls         Poll[]
+
+  @@map("user")
+}
+
+model Game {
+  id   String   @id @default(cuid())
+  date DateTime
+
+  firstTeamCountryCode  String @map("first_team_country_code")
+  secondTeamCountryCode String @map("second_team_country_code")
+
+  guesses Guess[]
+
+  @@map("game")
+}
+
+model Guess {
+  id String @id @default(cuid())
+
+  firstTeamPoints  Int    @map("first_team_point")
+  secondTeamPoints Int    @map("second_team_point")
+  participantId    String @map("participant_id")
+  gameId           String @map("game_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  game        Game        @relation(fields: [gameId], references: [id])
+  participant Participant @relation(fields: [participantId], references: [id])
+
+  @@unique([participantId, gameId])
+  @@map("guess")
+}
