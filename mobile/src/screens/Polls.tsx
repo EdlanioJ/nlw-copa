@@ -1,42 +1,36 @@
+import { useEffect } from 'react';
 import { FlatList, Icon, useToast, VStack } from 'native-base';
+import { useNavigation } from '@react-navigation/native';
 
 import { Octicons } from '@expo/vector-icons';
 import { Button } from '../components/Button';
 import { Header } from '../components/Header';
-import { api } from '../service/api';
-import { useCallback, useEffect, useState } from 'react';
-import { PollCard, PollData } from '../components/PollCard';
+import { PollCard } from '../components/PollCard';
 import { Loading } from '../components/Loading';
 import { EmptyPollList } from '../components/EmptyPollList';
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
+
+import { useRefreshOnFocus } from '../hooks/refresh';
+import { useFetchPools } from '../api/hooks';
 
 export function Polls() {
   const toast = useToast();
-  const [isLoading, setIsLoading] = useState(true);
-  const [polls, setPolls] = useState<PollData[]>([]);
   const { navigate } = useNavigation();
-  async function fetchPolls() {
-    try {
-      setIsLoading(true);
-      const response = await api.get('/polls');
-      setPolls(response.data.polls);
-    } catch (error) {
+
+  const { data: polls, isLoading, isError, error, refetch } = useFetchPools();
+
+  useRefreshOnFocus(refetch);
+
+  useEffect(() => {
+    if (isError) {
       console.log(error);
       toast.show({
         title: 'Não foi possível carregar os bolões',
         placement: 'top',
         bgColor: 'red.500',
       });
-    } finally {
-      setIsLoading(false);
     }
-  }
+  }, [isError]);
 
-  useFocusEffect(
-    useCallback(() => {
-      fetchPolls();
-    }, [])
-  );
   return (
     <VStack flex={1} bgColor="gray.900">
       <Header title="Meus bolões" />

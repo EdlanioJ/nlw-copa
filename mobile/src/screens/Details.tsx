@@ -2,14 +2,16 @@ import { useRoute } from '@react-navigation/native';
 import { HStack, useToast, VStack } from 'native-base';
 import { useEffect, useState } from 'react';
 import { Share } from 'react-native';
+
 import { EmptyMyPollList } from '../components/EmptyMyPollList';
 import { Guesses } from '../components/Guesses';
 import { Header } from '../components/Header';
 import { Loading } from '../components/Loading';
 import { Option } from '../components/Option';
-import { PollData } from '../components/PollCard';
 import { PollHeader } from '../components/PollHeader';
-import { api } from '../service/api';
+
+import { useFetchPool } from '../api/hooks';
+import { useRefreshOnFocus } from '../hooks/refresh';
 
 interface RouteParams {
   id: string;
@@ -21,46 +23,44 @@ export function Details() {
   const [optionSelected, setOptionSelected] = useState<'guesses' | 'ranking'>(
     'guesses'
   );
-  const [isLoading, setIsLoading] = useState(true);
-  const [poll, setPoll] = useState<PollData>({} as PollData);
-  const { id } = route.params as RouteParams;
 
-  async function fetchPoll() {
-    try {
-      const response = await api.get(`polls/${id}`);
-      setPoll(response.data.poll);
-    } catch (error) {
+  const { id } = route.params as RouteParams;
+  const { data: poll, isLoading, error, isError, refetch } = useFetchPool(id);
+
+  useRefreshOnFocus(refetch);
+
+  useEffect(() => {
+    if (isError) {
       console.log(error);
       toast.show({
         title: 'Não foi possível carregar os detalhes do bolão',
         placement: 'top',
         bgColor: 'red.500',
       });
-    } finally {
-      setIsLoading(false);
     }
-  }
+  }, [isError]);
 
-  useEffect(() => {
-    fetchPoll();
-  }, [id]);
-
-  async function handleCodeShare() {
+  async function handleCodeShare(message: string) {
     await Share.share({
-      message: poll.code,
+      message,
     });
   }
 
   if (isLoading) {
     return <Loading />;
   }
+
+  if (!poll) {
+    return null;
+  }
+
   return (
     <VStack flex={1} bgColor="gray.900">
       <Header
         title={poll.title}
         showBackButton
         showShareButton
-        onShare={handleCodeShare}
+        onShare={() => handleCodeShare(poll.id)}
       />
       {poll._count.participants > 0 ? (
         <VStack px={5} flex={1}>
@@ -78,7 +78,7 @@ export function Details() {
               onPress={() => setOptionSelected('ranking')}
             />
           </HStack>
-          <Guesses pollId={poll.id} code={poll.code} />
+          <Guesses poolId={poll.id} code={poll.code} />
         </VStack>
       ) : (
         <EmptyMyPollList code={poll.code} />

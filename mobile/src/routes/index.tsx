@@ -5,12 +5,12 @@ import { SignIn } from '../screens/SignIn';
 import { AppRoutes } from './app.routes';
 
 export function Routes() {
-  const { user } = useAuth();
+  const { isSigned } = useAuth();
 
   return (
     <Box flex={1} bgColor="gray.900">
       <NavigationContainer>
-        {user.name ? <AppRoutes /> : <SignIn />}
+        {isSigned ? <AppRoutes /> : <SignIn />}
       </NavigationContainer>
     </Box>
   );

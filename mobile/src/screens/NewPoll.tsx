@@ -1,17 +1,18 @@
 import { useState } from 'react';
 import { Heading, Text, useToast, VStack } from 'native-base';
+
 import { Header } from '../components/Header';
 import Logo from '../assets/logo.svg';
 import { Input } from '../components/Input';
 import { Button } from '../components/Button';
-import { api } from '../service/api';
+
+import { useCreatePool } from '../api/hooks';
 
 export function NewPoll() {
   const [title, setTitle] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
   const toast = useToast();
-
-  async function handlePollCreate() {
+  const { mutate, isLoading } = useCreatePool();
+  function handlePollCreate() {
     if (!title.trim()) {
       return toast.show({
         title: 'Informe o titulo do seu bolão',
@@ -19,26 +20,25 @@ export function NewPoll() {
         bgColor: 'red.500',
       });
     }
-    try {
-      setIsLoading(true);
-      const response = await api.post('/polls', { title });
-      toast.show({
-        title: 'Bolão criado com sucesso',
-        placement: 'top',
-        bgColor: 'green.500',
-      });
+    mutate(title, {
+      onSuccess: () => {
+        toast.show({
+          title: 'Bolão criado com sucesso',
+          placement: 'top',
+          bgColor: 'green.500',
+        });
 
-      setTitle('');
-    } catch (error) {
-      console.log(error);
-      toast.show({
-        title: 'Não foi possível criar o bolão',
-        placement: 'top',
-        bgColor: 'red.500',
-      });
-    } finally {
-      setIsLoading(false);
-    }
+        setTitle('');
+      },
+      onError: (error) => {
+        console.log(error);
+        toast.show({
+          title: 'Não foi possível criar o bolão',
+          placement: 'top',
+          bgColor: 'red.500',
+        });
+      },
+    });
   }
 
   return (

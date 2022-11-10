@@ -3,14 +3,18 @@ import * as AuthSession from 'expo-auth-session';
 import * as Google from 'expo-auth-session/providers/google';
 import * as WebBrowser from 'expo-web-browser';
 
-import { api } from '../service/api';
+import { api } from '../api/api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useAuthWithGoogle } from '../api/hooks';
+import { Loading } from '../components/Loading';
 
 interface UserProps {
   name: string;
   avatarUrl: string;
 }
+
 export interface AuthContextDataProps {
-  user: UserProps;
+  isSigned: boolean;
   isUserLoading: boolean;
   signIn: () => Promise<void>;
 }
@@ -21,35 +25,35 @@ type AuthProviderProps = {
   children: ReactNode;
 };
 
+const TOKEN_STORAGE_KEY = '@nlwcopamobile:token';
+
 WebBrowser.maybeCompleteAuthSession();
-
 export function AuthProvider({ children }: AuthProviderProps) {
-  const [user, setUser] = useState({} as UserProps);
+  const [isSigned, setIsSigned] = useState(false);
   const [isUserLoading, setIsUserLoading] = useState(false);
+  const [isAppLoading, setIsAppLoading] = useState(true);
+  const { mutate } = useAuthWithGoogle();
 
-  const [request, response, promptAsync] = Google.useAuthRequest({
+  const [_, response, promptAsync] = Google.useAuthRequest({
     clientId: process.env.GOOGLE_CLIENT_ID,
     redirectUri: AuthSession.makeRedirectUri({ useProxy: true }),
     scopes: ['profile', 'email'],
   });
 
-  async function signInWithGoogle(token: string) {
-    try {
-      setIsUserLoading(true);
+  function signInWithGoogle(token: string) {
+    mutate(token, {
+      onSuccess: async (tokenResponse) => {
+        api.defaults.headers.common[
+          'Authorization'
+        ] = `Bearer ${tokenResponse}`;
 
-      const tokenResponse = await api.post('/users', { access_token: token });
-      api.defaults.headers.common[
-        'Authorization'
-      ] = `Bearer ${tokenResponse.data.token}`;
-
-      const userResponse = await api.get('/me');
-      setUser(userResponse.data.user);
-    } catch (error) {
-      console.log(error);
-      throw error;
-    } finally {
-      setIsUserLoading(false);
-    }
+        await AsyncStorage.setItem(TOKEN_STORAGE_KEY, tokenResponse);
+        setIsSigned(true);
+      },
+      onError: (error) => {
+        console.log(error);
+      },
+    });
   }
 
   async function signIn() {
@@ -65,7 +69,23 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }
 
   useEffect(() => {
-    async function bootstrap() {}
+    async function bootstrap() {
+      try {
+        setIsAppLoading(true);
+        const token = await AsyncStorage.getItem(TOKEN_STORAGE_KEY);
+        if (!token) {
+          setIsSigned(false);
+          return;
+        }
+
+        api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        setIsSigned(true);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsAppLoading(false);
+      }
+    }
 
     bootstrap();
   }, []);
@@ -76,8 +96,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }, [response]);
 
+  if (isAppLoading) return <Loading />;
+
   return (
-    <AuthContext.Provider value={{ signIn, isUserLoading, user }}>
+    <AuthContext.Provider value={{ signIn, isUserLoading, isSigned }}>
       {children}
     </AuthContext.Provider>
   );
