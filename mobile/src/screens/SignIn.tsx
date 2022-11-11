@@ -16,6 +16,9 @@ export function SignIn() {
         type="SECONDARY"
         leftIcon={<Icon as={Fontisto} name="google" size="md" color="white" />}
         mt={12}
+        _loading={{
+          _spinner: { color: 'white' },
+        }}
         onPress={signIn}
         isLoading={isUserLoading}
       />
