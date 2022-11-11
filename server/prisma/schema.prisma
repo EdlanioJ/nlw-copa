@@ -10,7 +10,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Poll {
+model Pool {
   id      String  @id @default(cuid())
   title   String
   code    String  @unique
@@ -22,20 +22,20 @@ model Poll {
 
   participants Participant[]
 
-  @@map("poll")
+  @@map("pool")
 }
 
 model Participant {
   id     String @id @default(cuid())
   userId String @map("user_id")
-  pollId String @map("poll_id")
+  poolId String @map("pool_id")
 
   user User @relation(fields: [userId], references: [id])
-  poll Poll @relation(fields: [pollId], references: [id])
+  pool Pool @relation(fields: [poolId], references: [id])
 
   guesses Guess[]
 
-  @@unique([userId, pollId])
+  @@unique([userId, poolId])
   @@map("participant")
 }
 
@@ -49,7 +49,7 @@ model User {
   createdAt DateTime @default(now()) @map("created_at")
 
   participantingAt Participant[]
-  ownPolls         Poll[]
+  ownPools         Pool[]
 
   @@map("user")
 }
