@@ -1,4 +1,5 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
+import { UserData } from '../../contexts/AuthContext';
 import { api } from '../api';
 
 export function useAuthWithGoogle() {
@@ -9,7 +10,7 @@ export function useAuthWithGoogle() {
 }
 
 export function useFetchMe() {
-  return useQuery(['user', 'me'], async () => {
+  return useQuery<UserData>(['user', 'me'], async () => {
     const response = await api.get('/me');
     return response.data.user;
   });
