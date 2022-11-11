@@ -7,7 +7,7 @@ import { Button } from '../components/Button';
 import { Header } from '../components/Header';
 import { PoolCard } from '../components/PoolCard';
 import { Loading } from '../components/Loading';
-import { EmptyPollList } from '../components/EmptyPollList';
+import { EmptyPoolList } from '../components/EmptyPoolList';
 
 import { useRefreshOnFocus } from '../hooks/refresh';
 import { useFetchPools } from '../api/hooks';
@@ -63,7 +63,7 @@ export function Polls() {
             />
           )}
           showsVerticalScrollIndicator={false}
-          ListEmptyComponent={() => <EmptyPollList />}
+          ListEmptyComponent={() => <EmptyPoolList />}
           _contentContainerStyle={{ pb: 10 }}
           px={5}
         />
