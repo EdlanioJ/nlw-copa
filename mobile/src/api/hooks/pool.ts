@@ -7,7 +7,7 @@ export function useCreatePool() {
   const queryClient = useQueryClient();
   return useMutation(
     async (title: string) => {
-      await api.post('/polls', { title });
+      await api.post('/pools', { title });
     },
     {
       onSuccess: () => {
@@ -22,7 +22,7 @@ export function useJoinPool() {
 
   return useMutation(
     async (code: string) => {
-      await api.post('/polls/join', { code });
+      await api.post('/pools/join', { code });
     },
     {
       onSuccess: () => {
@@ -34,21 +34,21 @@ export function useJoinPool() {
 
 export function useFetchPools() {
   return useQuery<PoolData[]>(['pools'], async () => {
-    const response = await api.get('/polls');
-    return response.data.polls;
+    const response = await api.get('/pools');
+    return response.data.pools;
   });
 }
 
 export function useFetchPool(id: string) {
   return useQuery<PoolData>(['pools', id], async () => {
-    const response = await api.get(`polls/${id}`);
-    return response.data.poll;
+    const response = await api.get(`pools/${id}`);
+    return response.data.pool;
   });
 }
 
 export function useFetchGames(poolId: string) {
   return useQuery<GameData[]>(['games'], async () => {
-    const response = await api.get(`/polls/${poolId}/games`);
+    const response = await api.get(`/pools/${poolId}/games`);
     return response.data.games;
   });
 }
@@ -68,7 +68,7 @@ export function useGuessConfirm() {
       firstTeamPoints: number;
       secondTeamPoints: number;
     }) => {
-      await api.post(`/polls/${poolId}/game/${gameId}/guess`, {
+      await api.post(`/pools/${poolId}/game/${gameId}/guess`, {
         firstTeamPoints: Number(firstTeamPoints),
         secondTeamPoints: Number(secondTeamPoints),
       });

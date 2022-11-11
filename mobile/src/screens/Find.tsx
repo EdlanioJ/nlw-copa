@@ -36,7 +36,7 @@ export function Find() {
         console.log(error);
 
         if (error instanceof AxiosError) {
-          if (error.response?.data?.message === 'Poll not found.') {
+          if (error.response?.data?.message === 'Pool not found.') {
             return toast.show({
               title: 'Bolão não encontrado!',
               placement: 'top',
@@ -45,7 +45,7 @@ export function Find() {
           }
 
           if (
-            error.response?.data?.message === 'You already joined this poll.'
+            error.response?.data?.message === 'You already joined this pool.'
           ) {
             return toast.show({
               title: 'Você já está nesse bolão',
