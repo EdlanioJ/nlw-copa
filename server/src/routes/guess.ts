@@ -11,13 +11,13 @@ export async function guessRoutes(fastify: FastifyInstance) {
   });
 
   fastify.post(
-    '/polls/:pollId/game/:gameId/guess',
+    '/pools/:poolId/game/:gameId/guess',
     {
       onRequest: [authenticate],
     },
     async (request, reply) => {
       const createGuessParams = z.object({
-        pollId: z.string(),
+        poolId: z.string(),
         gameId: z.string(),
       });
 
@@ -26,15 +26,15 @@ export async function guessRoutes(fastify: FastifyInstance) {
         secondTeamPoints: z.number(),
       });
 
-      const { gameId, pollId } = createGuessParams.parse(request.params);
+      const { gameId, poolId } = createGuessParams.parse(request.params);
       const { firstTeamPoints, secondTeamPoints } = createGuessBody.parse(
         request.body
       );
 
       const participant = await prisma.participant.findUnique({
         where: {
-          userId_pollId: {
-            pollId,
+          userId_poolId: {
+            poolId,
             userId: request.user.sub,
           },
         },
@@ -42,7 +42,7 @@ export async function guessRoutes(fastify: FastifyInstance) {
 
       if (!participant) {
         return reply.status(400).send({
-          message: 'you are not allowed to create a guess inside this poll',
+          message: 'you are not allowed to create a guess inside this pool',
         });
       }
 
@@ -57,7 +57,7 @@ export async function guessRoutes(fastify: FastifyInstance) {
 
       if (guess) {
         return reply.status(400).send({
-          message: 'You already sent a guess to this game on this poll',
+          message: 'You already sent a guess to this game on this pool',
         });
       }
 
