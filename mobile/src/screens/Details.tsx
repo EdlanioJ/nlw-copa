@@ -3,7 +3,7 @@ import { HStack, useToast, VStack } from 'native-base';
 import { useEffect, useState } from 'react';
 import { Share } from 'react-native';
 
-import { EmptyMyPollList } from '../components/EmptyMyPollList';
+import { EmptyMyPoolList } from '../components/EmptyMyPoolList';
 import { Guesses } from '../components/Guesses';
 import { Header } from '../components/Header';
 import { Loading } from '../components/Loading';
@@ -81,7 +81,7 @@ export function Details() {
           <Guesses poolId={poll.id} code={poll.code} />
         </VStack>
       ) : (
-        <EmptyMyPollList code={poll.code} />
+        <EmptyMyPoolList code={poll.code} />
       )}
     </VStack>
   );

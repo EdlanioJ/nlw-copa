@@ -5,7 +5,7 @@ interface Props {
   code: string;
 }
 
-export function EmptyMyPollList({ code }: Props) {
+export function EmptyMyPoolList({ code }: Props) {
   async function handleCodeShare() {
     await Share.share({
       message: code,

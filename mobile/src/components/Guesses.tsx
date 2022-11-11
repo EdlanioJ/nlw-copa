@@ -2,7 +2,7 @@ import { FlatList, useToast } from 'native-base';
 import { useEffect, useState } from 'react';
 import { useFetchGames, useGuessConfirm } from '../api/hooks';
 
-import { EmptyMyPollList } from './EmptyMyPollList';
+import { EmptyMyPoolList } from './EmptyMyPoolList';
 import { Game } from './Game';
 import { Loading } from './Loading';
 
@@ -79,7 +79,7 @@ export function Guesses({ poolId, code }: Props) {
           onGuessConfirm={() => handleGuessConfirm(item.id)}
         />
       )}
-      ListEmptyComponent={() => <EmptyMyPollList code={code} />}
+      ListEmptyComponent={() => <EmptyMyPoolList code={code} />}
     />
   );
 }
