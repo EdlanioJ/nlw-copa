@@ -7,7 +7,7 @@ import cors from '@fastify/cors';
 import jwt from '@fastify/jwt';
 
 import { userRoutes } from './routes/user';
-import { pollRoutes } from './routes/poll';
+import { poolRoutes } from './routes/pool';
 import { guessRoutes } from './routes/guess';
 import { authRoutes } from './routes/auth';
 import { gameRoutes } from './routes/game';
@@ -26,7 +26,7 @@ fastify.register(jwt, {
 
 fastify.register(authRoutes);
 fastify.register(userRoutes);
-fastify.register(pollRoutes);
+fastify.register(poolRoutes);
 fastify.register(guessRoutes);
 fastify.register(gameRoutes);
 

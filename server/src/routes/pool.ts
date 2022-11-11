@@ -5,8 +5,8 @@ import { z } from 'zod';
 import { prisma } from '../lib/prisma';
 import { authenticate } from '../plugins/authenticate';
 
-export async function pollRoutes(fastify: FastifyInstance) {
-  fastify.post('/polls', async (request, replay) => {
+export async function poolRoutes(fastify: FastifyInstance) {
+  fastify.post('/pools', async (request, replay) => {
     const createPoolBody = z.object({
       title: z.string(),
     });
@@ -17,7 +17,7 @@ export async function pollRoutes(fastify: FastifyInstance) {
 
     try {
       await request.jwtVerify();
-      await prisma.poll.create({
+      await prisma.pool.create({
         data: {
           title,
           code,
@@ -30,7 +30,7 @@ export async function pollRoutes(fastify: FastifyInstance) {
         },
       });
     } catch (error) {
-      await prisma.poll.create({
+      await prisma.pool.create({
         data: {
           title,
           code,
@@ -41,25 +41,25 @@ export async function pollRoutes(fastify: FastifyInstance) {
     return replay.status(201).send({ code });
   });
 
-  fastify.get('/polls/count', async () => {
-    const count = await prisma.poll.count();
+  fastify.get('/pools/count', async () => {
+    const count = await prisma.pool.count();
 
     return { count };
   });
 
   fastify.post(
-    '/polls/join',
+    '/pools/join',
     {
       onRequest: [authenticate],
     },
     async (request, reply) => {
-      const joinPollBody = z.object({
+      const joinPoolBody = z.object({
         code: z.string(),
       });
 
-      const { code } = joinPollBody.parse(request.body);
+      const { code } = joinPoolBody.parse(request.body);
 
-      const poll = await prisma.poll.findUnique({
+      const pool = await prisma.pool.findUnique({
         where: {
           code,
         },
@@ -72,22 +72,22 @@ export async function pollRoutes(fastify: FastifyInstance) {
         },
       });
 
-      if (!poll) {
+      if (!pool) {
         return reply.status(400).send({
-          message: 'Poll not found',
+          message: 'Pool not found',
         });
       }
 
-      if (poll.participants.length > 0) {
+      if (pool.participants.length > 0) {
         return reply.status(400).send({
-          message: 'You already joined this poll.',
+          message: 'You already joined this pool.',
         });
       }
 
-      if (!poll.ownerId) {
-        await prisma.poll.update({
+      if (!pool.ownerId) {
+        await prisma.pool.update({
           where: {
-            id: poll.id,
+            id: pool.id,
           },
           data: {
             ownerId: request.user.sub,
@@ -96,7 +96,7 @@ export async function pollRoutes(fastify: FastifyInstance) {
       }
       await prisma.participant.create({
         data: {
-          pollId: poll.id,
+          poolId: pool.id,
           userId: request.user.sub,
         },
       });
@@ -106,12 +106,12 @@ export async function pollRoutes(fastify: FastifyInstance) {
   );
 
   fastify.get(
-    '/polls',
+    '/pools',
     {
       onRequest: [authenticate],
     },
     async (request) => {
-      const polls = await prisma.poll.findMany({
+      const pools = await prisma.pool.findMany({
         where: {
           participants: {
             some: { userId: request.user.sub },
@@ -143,22 +143,22 @@ export async function pollRoutes(fastify: FastifyInstance) {
         },
       });
 
-      return { polls };
+      return { pools };
     }
   );
 
   fastify.get(
-    '/polls/:id',
+    '/pools/:id',
     {
       onRequest: [authenticate],
     },
     async (request) => {
-      const getPollParams = z.object({
+      const getPoolParams = z.object({
         id: z.string(),
       });
 
-      const { id } = getPollParams.parse(request.params);
-      const poll = await prisma.poll.findUnique({
+      const { id } = getPoolParams.parse(request.params);
+      const pool = await prisma.pool.findUnique({
         where: {
           id,
         },
@@ -187,7 +187,7 @@ export async function pollRoutes(fastify: FastifyInstance) {
           },
         },
       });
-      return { poll };
+      return { pool };
     }
   );
 }
