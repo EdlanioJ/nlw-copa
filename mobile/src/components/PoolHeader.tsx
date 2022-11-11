@@ -7,7 +7,7 @@ interface Props {
   data: PoolData;
 }
 
-export function PollHeader({ data }: Props) {
+export function PoolHeader({ data }: Props) {
   return (
     <HStack
       w="full"

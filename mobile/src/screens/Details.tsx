@@ -8,7 +8,7 @@ import { Guesses } from '../components/Guesses';
 import { Header } from '../components/Header';
 import { Loading } from '../components/Loading';
 import { Option } from '../components/Option';
-import { PollHeader } from '../components/PollHeader';
+import { PoolHeader } from '../components/PoolHeader';
 
 import { useFetchPool } from '../api/hooks';
 import { useRefreshOnFocus } from '../hooks/refresh';
@@ -64,7 +64,7 @@ export function Details() {
       />
       {poll._count.participants > 0 ? (
         <VStack px={5} flex={1}>
-          <PollHeader data={poll} />
+          <PoolHeader data={poll} />
 
           <HStack bgColor="gray.800" p={1} rounded="sm" mb={5}>
             <Option
