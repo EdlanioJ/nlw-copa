@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import { Octicons } from '@expo/vector-icons';
 import { Button } from '../components/Button';
 import { Header } from '../components/Header';
-import { PollCard } from '../components/PollCard';
+import { PoolCard } from '../components/PoolCard';
 import { Loading } from '../components/Loading';
 import { EmptyPollList } from '../components/EmptyPollList';
 
@@ -57,7 +57,7 @@ export function Polls() {
           data={polls}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
-            <PollCard
+            <PoolCard
               data={item}
               onPress={() => navigate('details', { id: item.id })}
             />

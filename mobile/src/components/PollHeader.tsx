@@ -1,10 +1,10 @@
 import { Heading, HStack, Text, VStack } from 'native-base';
 
-import { PollData } from './PollCard';
+import { PoolData } from './PoolCard';
 import { Participants } from './Participants';
 
 interface Props {
-  data: PollData;
+  data: PoolData;
 }
 
 export function PollHeader({ data }: Props) {

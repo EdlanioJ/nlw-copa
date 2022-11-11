@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { GameData } from '../../components/Game';
-import { PollData } from '../../components/PollCard';
+import { PoolData } from '../../components/PoolCard';
 import { api } from '../api';
 
 export function useCreatePool() {
@@ -33,14 +33,14 @@ export function useJoinPool() {
 }
 
 export function useFetchPools() {
-  return useQuery<PollData[]>(['pools'], async () => {
+  return useQuery<PoolData[]>(['pools'], async () => {
     const response = await api.get('/polls');
     return response.data.polls;
   });
 }
 
 export function useFetchPool(id: string) {
-  return useQuery<PollData>(['pools', id], async () => {
+  return useQuery<PoolData>(['pools', id], async () => {
     const response = await api.get(`polls/${id}`);
     return response.data.poll;
   });
