@@ -8,7 +8,7 @@ import { Button } from '../components/Button';
 
 import { useCreatePool } from '../api/hooks';
 
-export function NewPoll() {
+export function New() {
   const [title, setTitle] = useState('');
   const toast = useToast();
   const { mutate, isLoading } = useCreatePool();

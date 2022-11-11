@@ -9,7 +9,7 @@ import { Button } from '../components/Button';
 import { useJoinPool } from '../api/hooks';
 import { AxiosError } from 'axios';
 
-export function FindPoll() {
+export function Find() {
   const toast = useToast();
   const { navigate } = useNavigation();
   const { mutate, isLoading } = useJoinPool();
