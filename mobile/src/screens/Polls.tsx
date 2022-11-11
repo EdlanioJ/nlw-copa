@@ -33,7 +33,7 @@ export function Polls() {
 
   return (
     <VStack flex={1} bgColor="gray.900">
-      <Header title="Meus bolões" />
+      <Header showMenuButton title="Meus bolões" />
       <VStack
         mt={6}
         mx={5}
