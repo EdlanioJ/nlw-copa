@@ -12,7 +12,7 @@ export function New() {
   const [title, setTitle] = useState('');
   const toast = useToast();
   const { mutate, isLoading } = useCreatePool();
-  function handlePollCreate() {
+  function handlePoolCreate() {
     if (!title.trim()) {
       return toast.show({
         title: 'Informe o titulo do seu bolão',
@@ -65,7 +65,7 @@ export function New() {
         <Button
           title="Criar seu bolão"
           isLoading={isLoading}
-          onPress={handlePollCreate}
+          onPress={handlePoolCreate}
         />
 
         <Text color="gray.200" textAlign="center" px={10} mt={4}>

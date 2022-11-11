@@ -25,7 +25,7 @@ export function Details() {
   );
 
   const { id } = route.params as RouteParams;
-  const { data: poll, isLoading, error, isError, refetch } = useFetchPool(id);
+  const { data: pool, isLoading, error, isError, refetch } = useFetchPool(id);
 
   useRefreshOnFocus(refetch);
 
@@ -50,21 +50,21 @@ export function Details() {
     return <Loading />;
   }
 
-  if (!poll) {
+  if (!pool) {
     return null;
   }
 
   return (
     <VStack flex={1} bgColor="gray.900">
       <Header
-        title={poll.title}
+        title={pool.title}
         showBackButton
         showShareButton
-        onShare={() => handleCodeShare(poll.id)}
+        onShare={() => handleCodeShare(pool.id)}
       />
-      {poll._count.participants > 0 ? (
+      {pool._count.participants > 0 ? (
         <VStack px={5} flex={1}>
-          <PoolHeader data={poll} />
+          <PoolHeader data={pool} />
 
           <HStack bgColor="gray.800" p={1} rounded="sm" mb={5}>
             <Option
@@ -78,10 +78,10 @@ export function Details() {
               onPress={() => setOptionSelected('ranking')}
             />
           </HStack>
-          <Guesses poolId={poll.id} code={poll.code} />
+          <Guesses poolId={pool.id} code={pool.code} />
         </VStack>
       ) : (
-        <EmptyMyPoolList code={poll.code} />
+        <EmptyMyPoolList code={pool.code} />
       )}
     </VStack>
   );

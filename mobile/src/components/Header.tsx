@@ -38,7 +38,7 @@ export function Header({
             icon={List}
           />
         ) : showBackButton ? (
-          <ButtonIcon onPress={() => navigate('polls')} icon={CaretLeft} />
+          <ButtonIcon onPress={() => navigate('pools')} icon={CaretLeft} />
         ) : (
           <EmptyBoxSpace />
         )}

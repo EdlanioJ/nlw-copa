@@ -16,7 +16,7 @@ export function Pools() {
   const toast = useToast();
   const { navigate } = useNavigation();
 
-  const { data: polls, isLoading, isError, error, refetch } = useFetchPools();
+  const { data: pools, isLoading, isError, error, refetch } = useFetchPools();
 
   useRefreshOnFocus(refetch);
 
@@ -46,7 +46,7 @@ export function Pools() {
           leftIcon={
             <Icon color="black" as={Octicons} size="md" name="search" />
           }
-          onPress={() => navigate('find-poll')}
+          onPress={() => navigate('find')}
           title="Buscar Bolão por Código"
         />
       </VStack>
@@ -54,7 +54,7 @@ export function Pools() {
         <Loading />
       ) : (
         <FlatList
-          data={polls}
+          data={pools}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <PoolCard

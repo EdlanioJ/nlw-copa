@@ -15,7 +15,7 @@ export function Find() {
   const { mutate, isLoading } = useJoinPool();
   const [code, setCode] = useState('');
 
-  function handleFindPoll() {
+  function handleFindPool() {
     if (!code.trim()) {
       return toast.show({
         title: 'Informe o código',
@@ -30,7 +30,7 @@ export function Find() {
           placement: 'top',
           bgColor: 'green.500',
         });
-        navigate('polls');
+        navigate('pools');
       },
       onError: (error) => {
         console.log(error);
@@ -86,7 +86,7 @@ export function Find() {
         />
         <Button
           title="Buscar bolão"
-          onPress={handleFindPoll}
+          onPress={handleFindPool}
           isLoading={isLoading}
         />
       </VStack>

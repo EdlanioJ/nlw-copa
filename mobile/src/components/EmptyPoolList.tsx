@@ -9,7 +9,7 @@ export function EmptyPoolList() {
         Você ainda não está participando de {'\n'} nenhum bolão, que tal
       </Text>
 
-      <Pressable onPress={() => navigate('find-poll')}>
+      <Pressable onPress={() => navigate('find')}>
         <Text
           textDecorationLine="underline"
           color="yellow.500"
@@ -23,7 +23,7 @@ export function EmptyPoolList() {
         ou
       </Text>
 
-      <Pressable onPress={() => navigate('new-poll')}>
+      <Pressable onPress={() => navigate('new')}>
         <Text textDecorationLine="underline" color="yellow.500">
           criar um novo
         </Text>

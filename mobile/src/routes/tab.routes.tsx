@@ -33,7 +33,7 @@ export function TabRoutes() {
       }}
     >
       <Screen
-        name="new-poll"
+        name="new"
         component={New}
         options={{
           tabBarLabel: 'Novo Bolão',
@@ -41,7 +41,7 @@ export function TabRoutes() {
         }}
       />
       <Screen
-        name="polls"
+        name="pools"
         component={Pools}
         options={{
           tabBarLabel: 'Meus bolões',
@@ -49,7 +49,7 @@ export function TabRoutes() {
         }}
       />
       <Screen
-        name="find-poll"
+        name="find"
         component={Find}
         options={{ tabBarButton: () => null }}
       />

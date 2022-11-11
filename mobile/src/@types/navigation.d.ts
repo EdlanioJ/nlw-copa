@@ -1,9 +1,9 @@
 export declare global {
   namespace ReactNavigation {
     interface RootParamList {
-      'new-poll': undefined;
-      'find-poll': undefined;
-      polls: undefined;
+      new: undefined;
+      find: undefined;
+      pools: undefined;
       details: {
         id: string;
       };
