@@ -5,14 +5,14 @@ import { z } from 'zod';
 
 export async function gameRoutes(fastify: FastifyInstance) {
   fastify.get(
-    '/polls/:id/games',
+    '/pools/:id/games',
     { onRequest: [authenticate] },
     async (request) => {
-      const getPollParams = z.object({
+      const getPoolParams = z.object({
         id: z.string(),
       });
 
-      const { id } = getPollParams.parse(request.params);
+      const { id } = getPoolParams.parse(request.params);
 
       const games = await prisma.game.findMany({
         orderBy: {
@@ -22,7 +22,7 @@ export async function gameRoutes(fastify: FastifyInstance) {
           guesses: {
             where: {
               participant: {
-                pollId: id,
+                poolId: id,
                 userId: request.user.sub,
               },
             },
