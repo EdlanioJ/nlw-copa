@@ -12,7 +12,7 @@ import { EmptyPoolList } from '../components/EmptyPoolList';
 import { useRefreshOnFocus } from '../hooks/refresh';
 import { useFetchPools } from '../api/hooks';
 
-export function Polls() {
+export function Pools() {
   const toast = useToast();
   const { navigate } = useNavigation();
 
