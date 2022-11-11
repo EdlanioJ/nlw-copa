@@ -8,7 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAuthWithGoogle } from '../api/hooks';
 import { Loading } from '../components/Loading';
 
-interface UserProps {
+export interface UserData {
   name: string;
   avatarUrl: string;
 }
@@ -17,6 +17,7 @@ export interface AuthContextDataProps {
   isSigned: boolean;
   isUserLoading: boolean;
   signIn: () => Promise<void>;
+  signOut: () => Promise<void>;
 }
 
 export const AuthContext = createContext({} as AuthContextDataProps);
@@ -68,6 +69,16 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }
 
+  async function signOut() {
+    try {
+      await AsyncStorage.removeItem(TOKEN_STORAGE_KEY);
+      setIsSigned(false);
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  }
+
   useEffect(() => {
     async function bootstrap() {
       try {
@@ -99,7 +110,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   if (isAppLoading) return <Loading />;
 
   return (
-    <AuthContext.Provider value={{ signIn, isUserLoading, isSigned }}>
+    <AuthContext.Provider value={{ signIn, isUserLoading, isSigned, signOut }}>
       {children}
     </AuthContext.Provider>
   );
