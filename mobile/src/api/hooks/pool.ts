@@ -35,6 +35,7 @@ export function useJoinPool() {
 export function useFetchPools() {
   return useQuery<PoolData[]>(['pools'], async () => {
     const response = await api.get('/pools');
+    console.log(response.data);
     return response.data.pools;
   });
 }

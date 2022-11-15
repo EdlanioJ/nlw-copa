@@ -4,9 +4,9 @@ import * as Google from 'expo-auth-session/providers/google';
 import * as WebBrowser from 'expo-web-browser';
 
 import { api } from '../api/api';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAuthWithGoogle } from '../api/hooks';
 import { Loading } from '../components/Loading';
+import { tokenService } from '../services/token';
 
 export interface UserData {
   name: string;
@@ -26,14 +26,12 @@ type AuthProviderProps = {
   children: ReactNode;
 };
 
-const TOKEN_STORAGE_KEY = '@nlwcopamobile:token';
-
 WebBrowser.maybeCompleteAuthSession();
 export function AuthProvider({ children }: AuthProviderProps) {
   const [isSigned, setIsSigned] = useState(false);
   const [isUserLoading, setIsUserLoading] = useState(false);
   const [isAppLoading, setIsAppLoading] = useState(true);
-  const { mutate } = useAuthWithGoogle();
+  const { mutate, isLoading } = useAuthWithGoogle();
 
   const [_, response, promptAsync] = Google.useAuthRequest({
     clientId: process.env.GOOGLE_CLIENT_ID,
@@ -46,9 +44,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
       onSuccess: async (tokenResponse) => {
         api.defaults.headers.common[
           'Authorization'
-        ] = `Bearer ${tokenResponse}`;
+        ] = `Bearer ${tokenResponse.accessToken}`;
 
-        await AsyncStorage.setItem(TOKEN_STORAGE_KEY, tokenResponse);
+        await tokenService.setTokens(tokenResponse);
+
         setIsSigned(true);
       },
       onError: (error) => {
@@ -71,7 +70,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   async function signOut() {
     try {
-      await AsyncStorage.removeItem(TOKEN_STORAGE_KEY);
+      await tokenService.clearTokens();
       setIsSigned(false);
     } catch (error) {
       console.log(error);
@@ -83,7 +82,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     async function bootstrap() {
       try {
         setIsAppLoading(true);
-        const token = await AsyncStorage.getItem(TOKEN_STORAGE_KEY);
+        const token = await tokenService.getAccessToken();
         if (!token) {
           setIsSigned(false);
           return;
@@ -110,7 +109,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
   if (isAppLoading) return <Loading />;
 
   return (
-    <AuthContext.Provider value={{ signIn, isUserLoading, isSigned, signOut }}>
+    <AuthContext.Provider
+      value={{
+        signIn,
+        isUserLoading: isLoading || isUserLoading,
+        isSigned,
+        signOut,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

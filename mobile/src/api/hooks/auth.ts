@@ -1,12 +1,23 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { UserData } from '../../contexts/AuthContext';
+import { TokenData } from '../../services/token';
 import { api } from '../api';
 
 export function useAuthWithGoogle() {
-  return useMutation(async (token: string) => {
-    const response = await api.post('/users', { access_token: token });
-    return response.data.token as string;
-  });
+  const queryClient = useQueryClient();
+
+  return useMutation(
+    async (token: string) => {
+      const response = await api.post('/users', { access_token: token });
+      console.log(response.data);
+      return response.data as TokenData;
+    },
+    {
+      onSuccess() {
+        queryClient.invalidateQueries(['games', 'pools', 'pool', 'user', 'me']);
+      },
+    }
+  );
 }
 
 export function useFetchMe() {
