@@ -16,7 +16,7 @@ export async function poolRoutes(fastify: FastifyInstance) {
     const code = String(generate()).toLocaleUpperCase();
 
     try {
-      await request.jwtVerify();
+      await request.accessJwtVerify();
       await prisma.pool.create({
         data: {
           title,

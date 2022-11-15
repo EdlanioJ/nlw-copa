@@ -1,6 +1,6 @@
 import { FastifyInstance } from 'fastify';
 import { prisma } from 'lib/prisma';
-import { authenticate } from 'plugins/authenticate';
+import { authenticate } from '../plugins/authenticate';
 import { z } from 'zod';
 
 export async function gameRoutes(fastify: FastifyInstance) {

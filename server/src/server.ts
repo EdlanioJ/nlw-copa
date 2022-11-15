@@ -22,6 +22,12 @@ fastify.register(cors, {
 
 fastify.register(jwt, {
   secret: process.env.JWT_SECRET,
+  namespace: 'access',
+});
+
+fastify.register(jwt, {
+  secret: process.env.JWT_REFRESH_SECRET,
+  namespace: 'refresh',
 });
 
 fastify.register(authRoutes);

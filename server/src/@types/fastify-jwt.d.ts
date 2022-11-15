@@ -8,4 +8,14 @@ declare module '@fastify/jwt' {
       avatarUrl: string;
     };
   }
+
+  interface JWT {
+    access: {
+      sign(payload: SignPayloadType, options?: Partial<SignOptions>): string;
+    };
+
+    refresh: {
+      sign(payload: SignPayloadType, options?: Partial<SignOptions>): string;
+    };
+  }
 }

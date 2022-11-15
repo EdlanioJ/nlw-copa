@@ -46,6 +46,8 @@ model User {
   googleId  String  @unique
   avatarUrl String? @map("avatar_url")
 
+  refreshToken String? @unique @map("refresh_token")
+
   createdAt DateTime @default(now()) @map("created_at")
 
   participantingAt Participant[]
