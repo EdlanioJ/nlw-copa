@@ -1,4 +1,9 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  UseQueryOptions,
+} from '@tanstack/react-query';
 import { GameData } from '../../components/Game';
 import { PoolData } from '../../components/PoolCard';
 import { api } from '../api';
@@ -32,26 +37,36 @@ export function useJoinPool() {
   );
 }
 
-export function useFetchPools() {
-  return useQuery<PoolData[]>(['pools'], async () => {
-    const response = await api.get('/pools');
-    console.log(response.data);
-    return response.data.pools;
-  });
+export function useFetchPools(options?: UseQueryOptions<PoolData[]>) {
+  return useQuery<PoolData[]>(
+    ['pools'],
+    async () => {
+      const response = await api.get('/pools');
+      return response.data.pools;
+    },
+    options
+  );
 }
 
-export function useFetchPool(id: string) {
+export function useFetchPool(id: string, options?: UseQueryOptions<PoolData>) {
   return useQuery<PoolData>(['pools', id], async () => {
     const response = await api.get(`pools/${id}`);
     return response.data.pool;
-  });
+  }, options);
 }
 
-export function useFetchGames(poolId: string) {
-  return useQuery<GameData[]>(['games'], async () => {
-    const response = await api.get(`/pools/${poolId}/games`);
-    return response.data.games;
-  });
+export function useFetchGames(
+  poolId: string,
+  options?: UseQueryOptions<GameData[]>
+) {
+  return useQuery<GameData[]>(
+    ['games'],
+    async () => {
+      const response = await api.get(`/pools/${poolId}/games`);
+      return response.data.games;
+    },
+    options
+  );
 }
 
 export function useGuessConfirm() {

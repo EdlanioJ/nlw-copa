@@ -43,7 +43,6 @@ api.interceptors.response.use(
             return api(originalConfig);
           }
         } catch (_error) {
-          console.log({ _error });
           return Promise.reject(_error);
         }
       }

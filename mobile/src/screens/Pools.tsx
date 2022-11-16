@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { FlatList, Icon, useToast, VStack } from 'native-base';
 import { useNavigation } from '@react-navigation/native';
 
@@ -16,20 +15,22 @@ export function Pools() {
   const toast = useToast();
   const { navigate } = useNavigation();
 
-  const { data: pools, isLoading, isError, error, refetch } = useFetchPools();
-
-  useRefreshOnFocus(refetch);
-
-  useEffect(() => {
-    if (isError) {
+  const {
+    data: pools,
+    isLoading,
+    refetch,
+  } = useFetchPools({
+    onError: (error) => {
       console.log(error);
       toast.show({
         title: 'Não foi possível carregar os bolões',
         placement: 'top',
         bgColor: 'red.500',
       });
-    }
-  }, [isError]);
+    },
+  });
+
+  useRefreshOnFocus(refetch);
 
   return (
     <VStack flex={1} bgColor="gray.900">

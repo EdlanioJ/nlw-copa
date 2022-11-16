@@ -15,18 +15,18 @@ export function Guesses({ poolId, code }: Props) {
   const [firstTeamPoints, setFirstTeamPoints] = useState('');
   const [secondTeamPoints, setSecondTeamPoints] = useState('');
   const toast = useToast();
-  const { data: games, isLoading, isError, error } = useFetchGames(poolId);
-  const { mutate } = useGuessConfirm();
-  useEffect(() => {
-    if (isError) {
+  const { data: games, isLoading } = useFetchGames(poolId, {
+    onError: (error) => {
       console.log(error);
       toast.show({
         title: 'Não foi possível carregar os jogos',
         placement: 'top',
         bgColor: 'red.500',
       });
-    }
-  }, [isError]);
+    },
+  });
+
+  const { mutate } = useGuessConfirm();
 
   function handleGuessConfirm(gameId: string) {
     if (!firstTeamPoints.trim() || !secondTeamPoints.trim()) {

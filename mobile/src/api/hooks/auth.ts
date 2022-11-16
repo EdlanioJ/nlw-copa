@@ -9,7 +9,6 @@ export function useAuthWithGoogle() {
   return useMutation(
     async (token: string) => {
       const response = await api.post('/users', { access_token: token });
-      console.log(response.data);
       return response.data as TokenData;
     },
     {

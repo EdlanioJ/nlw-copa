@@ -1,6 +1,6 @@
 import { useRoute } from '@react-navigation/native';
 import { HStack, useToast, VStack } from 'native-base';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Share } from 'react-native';
 
 import { EmptyMyPoolList } from '../components/EmptyMyPoolList';
@@ -25,20 +25,22 @@ export function Details() {
   );
 
   const { id } = route.params as RouteParams;
-  const { data: pool, isLoading, error, isError, refetch } = useFetchPool(id);
-
-  useRefreshOnFocus(refetch);
-
-  useEffect(() => {
-    if (isError) {
+  const {
+    data: pool,
+    isLoading,
+    refetch,
+  } = useFetchPool(id, {
+    onError: (error) => {
       console.log(error);
       toast.show({
         title: 'Não foi possível carregar os detalhes do bolão',
         placement: 'top',
         bgColor: 'red.500',
       });
-    }
-  }, [isError]);
+    },
+  });
+
+  useRefreshOnFocus(refetch);
 
   async function handleCodeShare(message: string) {
     await Share.share({
