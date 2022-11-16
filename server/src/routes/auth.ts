@@ -71,6 +71,23 @@ export async function authRoutes(fastify: FastifyInstance) {
     }
   );
 
+  fastify.post(
+    '/auth/logout',
+    { onRequest: [authenticate] },
+    async (request) => {
+      const logoutBody = z.object({
+        sub: z.string(),
+      });
+
+      const { sub } = logoutBody.parse(request.user);
+
+      await prisma.user.update({
+        where: { id: sub },
+        data: { refreshToken: null },
+      });
+    }
+  );
+
   fastify.get(
     '/me',
     {
