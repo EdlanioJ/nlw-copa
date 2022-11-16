@@ -4,7 +4,7 @@ import * as Google from 'expo-auth-session/providers/google';
 import * as WebBrowser from 'expo-web-browser';
 
 import { api } from '../api/api';
-import { useAuthWithGoogle } from '../api/hooks';
+import { useAuthWithGoogle, useLogout } from '../api/hooks';
 import { Loading } from '../components/Loading';
 import { tokenService } from '../services/token';
 
@@ -32,6 +32,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [isUserLoading, setIsUserLoading] = useState(false);
   const [isAppLoading, setIsAppLoading] = useState(true);
   const { mutate, isLoading } = useAuthWithGoogle();
+  const { mutateAsync: logout } = useLogout();
 
   const [_, response, promptAsync] = Google.useAuthRequest({
     clientId: process.env.GOOGLE_CLIENT_ID,
@@ -69,13 +70,16 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }
 
   async function signOut() {
-    try {
-      await tokenService.clearTokens();
-      setIsSigned(false);
-    } catch (error) {
-      console.log(error);
-      throw error;
-    }
+    await logout(undefined, {
+      onSuccess: async () => {
+        await tokenService.clearTokens();
+        setIsSigned(false);
+      },
+      onError: (error) => {
+        console.log(error);
+        throw error;
+      },
+    });
   }
 
   useEffect(() => {

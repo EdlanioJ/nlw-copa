@@ -19,6 +19,12 @@ export function useAuthWithGoogle() {
   );
 }
 
+export function useLogout() {
+  return useMutation(async () => {
+    await api.post('/auth/logout');
+  });
+}
+
 export function useFetchMe() {
   return useQuery<UserData>(['user', 'me'], async () => {
     const response = await api.get('/me');
