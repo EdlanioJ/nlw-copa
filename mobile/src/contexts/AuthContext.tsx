@@ -43,10 +43,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
   function signInWithGoogle(token: string) {
     mutate(token, {
       onSuccess: async (tokenResponse) => {
-        api.defaults.headers.common[
-          'Authorization'
-        ] = `Bearer ${tokenResponse.accessToken}`;
-
         await tokenService.setTokens(tokenResponse);
 
         setIsSigned(true);
@@ -92,7 +88,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
           return;
         }
 
-        api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
         setIsSigned(true);
       } catch (error) {
         console.log(error);
