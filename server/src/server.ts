@@ -12,38 +12,38 @@ import { guessRoutes } from './routes/guess';
 import { authRoutes } from './routes/auth';
 import { gameRoutes } from './routes/game';
 
-const fastify = Fastify({
+const server = Fastify({
   logger: true,
 });
 
-fastify.register(cors, {
+server.register(cors, {
   origin: true,
 });
 
-fastify.register(jwt, {
+server.register(jwt, {
   secret: process.env.JWT_SECRET,
   namespace: 'access',
 });
 
-fastify.register(jwt, {
+server.register(jwt, {
   secret: process.env.JWT_REFRESH_SECRET,
   namespace: 'refresh',
 });
 
-fastify.register(authRoutes);
-fastify.register(userRoutes);
-fastify.register(poolRoutes);
-fastify.register(guessRoutes);
-fastify.register(gameRoutes);
+server.register(authRoutes);
+server.register(userRoutes);
+server.register(poolRoutes);
+server.register(guessRoutes);
+server.register(gameRoutes);
 
 async function bootstrap() {
   try {
-    await fastify.listen({
+    await server.listen({
       port: Number(process.env.PORT) || 3333,
       host: '0.0.0.0',
     });
   } catch (error) {
-    fastify.log.error(error);
+    server.log.error(error);
     process.exit(1);
   }
 }
