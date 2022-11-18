@@ -49,10 +49,11 @@ export function useFetchPools(options?: UseQueryOptions<PoolData[]>) {
 }
 
 export function useFetchPool(id: string, options?: UseQueryOptions<PoolData>) {
-  return useQuery<PoolData>(['pools', id], async () => {
-    const response = await api.get(`pools/${id}`);
+  return useQuery<PoolData>(['pools', id], async ({ queryKey }) => {
+    const poolId = queryKey[1];
+    const response = await api.get(`pools/${poolId}`);
     return response.data.pool;
-  }, options);
+  });
 }
 
 export function useFetchGames(
@@ -60,7 +61,7 @@ export function useFetchGames(
   options?: UseQueryOptions<GameData[]>
 ) {
   return useQuery<GameData[]>(
-    ['games'],
+    ['games', poolId],
     async () => {
       const response = await api.get(`/pools/${poolId}/games`);
       return response.data.games;
@@ -88,10 +89,12 @@ export function useGuessConfirm() {
         firstTeamPoints: Number(firstTeamPoints),
         secondTeamPoints: Number(secondTeamPoints),
       });
+
+      return poolId;
     },
     {
-      onSuccess: () => {
-        queryClient.invalidateQueries(['games']);
+      onSuccess: (poolId) => {
+        queryClient.refetchQueries(['games', poolId]);
       },
     }
   );
