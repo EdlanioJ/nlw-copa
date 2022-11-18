@@ -69,6 +69,7 @@ export function Game({
         alignItems="center"
       >
         <Team
+          guess={data.guess?.firstTeamPoints}
           code={data.firstTeamCountryCode}
           position="right"
           onChangeText={setFirstTeamPoints}
@@ -77,6 +78,7 @@ export function Game({
         <X color={colors.gray[300]} size={sizes[6]} />
 
         <Team
+          guess={data.guess?.secondTeamPoints}
           code={data.secondTeamCountryCode}
           position="left"
           onChangeText={setSecondTeamPoints}
