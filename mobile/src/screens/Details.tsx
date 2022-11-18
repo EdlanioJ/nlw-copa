@@ -11,7 +11,6 @@ import { Option } from '../components/Option';
 import { PoolHeader } from '../components/PoolHeader';
 
 import { useFetchPool } from '../api/hooks';
-import { useRefreshOnFocus } from '../hooks/refresh';
 
 interface RouteParams {
   id: string;
@@ -25,11 +24,7 @@ export function Details() {
   );
 
   const { id } = route.params as RouteParams;
-  const {
-    data: pool,
-    isLoading,
-    refetch,
-  } = useFetchPool(id, {
+  const { data: pool, isLoading } = useFetchPool(id, {
     onError: (error) => {
       console.log(error);
       toast.show({
@@ -39,8 +34,6 @@ export function Details() {
       });
     },
   });
-
-  useRefreshOnFocus(refetch);
 
   async function handleCodeShare(message: string) {
     await Share.share({
@@ -62,7 +55,7 @@ export function Details() {
         title={pool.title}
         showBackButton
         showShareButton
-        onShare={() => handleCodeShare(pool.id)}
+        onShare={() => handleCodeShare(pool.code)}
       />
       {pool._count.participants > 0 ? (
         <VStack px={5} flex={1}>
