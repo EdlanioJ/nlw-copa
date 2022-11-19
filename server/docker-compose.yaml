@@ -1,4 +1,4 @@
-version: '3'
+version: '3.8'
 
 services:
   app:
@@ -7,6 +7,27 @@ services:
     container_name: nlw-server
     ports:
       - ${PORT}:${PORT}
-      - "5555:5555"
+      - 5555:5555
     volumes:
       - .:/home/node/app
+    depends_on:
+      db:
+        condition: service_healthy
+  
+  db:
+    image: postgres:15
+    container_name: nlw-db
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=nlwcopa
+    volumes:
+      - .docker/dbdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d nlwcopa"]
+      interval: 10s
+      timeout: 5s
+      retries: 5

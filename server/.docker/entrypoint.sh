@@ -6,4 +6,8 @@ fi
 
 yarn install
 
+yarn run prisma migrate dev
+
+yarn run prisma db seed
+
 yarn dev
