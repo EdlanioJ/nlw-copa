@@ -51,14 +51,24 @@ git clone https://github.com/EdlanioJ/nlw-copa.git
 
 ```bash
 cd server
-
-yarn install
 ```
 
 Criar un ficheiro `.env` com o template [.env.example](/server/.env.example) encontrado na pasta server.
 
 ```bash
+yarn install
+
+yarn run prisma migrate dev
+
+yarn run prisma db seed
+
 yarn run dev
+```
+
+Com [Docker](https://www.docker.com/)
+
+```bash
+docker compose up
 ```
 
 ### Web
